@@ -1,0 +1,74 @@
+1. 
+
+a) The value 3145.13 was calculated by the order amount divided by the number of orders. There are many bulk orders being placed which is highly skewing the AOV. A better way to calculate the AOV would be to take the average amount of each item for every order. Average amount per item = (order_amount / total_items). Then, calculate the average amount per item for every single order. This would give you a new column which gives you the average amount per item for every order. Now, you can get the total of that column and divide it by total orders (which is 5000 in the data set).
+
+In my spreadsheet attached, I have created column H which calculates the average amount per item for every order. The cells in green showcase this within the spreadsheet.
+
+b) The metric that I would report for this dataset is the average amount per item for every order. 
+
+c) The metric's value is 387.7428
+
+2. 
+
+a) The query below returned 54 orders shipped by speedy express.
+
+SELECT 
+  Count(*) 
+FROM 
+  orders 
+WHERE 
+  shipperid = 1;
+
+b) The query below returned 'Peacock'.
+
+WITH numofemployeeorders AS (
+  SELECT 
+    e.lastname, 
+    o.employeeid, 
+    Count(o.employeeid) AS TotalOrders 
+  FROM 
+    orders o 
+    INNER JOIN employees e ON o.employeeid = e.employeeid 
+  GROUP BY 
+    e.employeeid 
+  ORDER BY 
+    totalorders DESC
+) 
+SELECT 
+  lastname 
+FROM 
+  (
+    SELECT 
+      lastname, 
+      Max(totalorders) 
+    FROM 
+      numofemployeeorders
+  );
+
+c) The query below returned 'Boston Crab Meat'.
+
+SELECT 
+  ProductName 
+FROM 
+  (
+    SELECT 
+      o.CustomerID, 
+      o.OrderID, 
+      od.ProductID, 
+      p.ProductName, 
+      sum(od.Quantity) as TotalOrders, 
+      c.Country 
+    FROM 
+      OrderDetails od 
+      Inner join Orders o on od.OrderID = o.OrderID 
+      Inner join Customers c on o.CustomerID = c.CustomerID 
+      Inner join Products p on od.ProductID = p.ProductID 
+    where 
+      c.Country = 'Germany' 
+    Group by 
+      od.ProductID 
+    Order by 
+      TotalOrders DESC 
+    Limit 
+      1
+  );
