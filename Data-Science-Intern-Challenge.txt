@@ -14,7 +14,7 @@ c) The metric's value is 387.7428
 
 2. 
 
-a) The query below returned 54 orders shipped by speedy express.
+a) The query below returns 54 orders shipped by speedy express.
 
 SELECT 
   Count(*) 
